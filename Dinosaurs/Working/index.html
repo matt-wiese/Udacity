@@ -31,64 +31,75 @@
       <div class="form-container">
         <p>Name:</p>
         <input id="name" class="form-field__full" type="name" name="name" />
-          <!-- Select metric or imperial units -->
+        <!-- Select metric or imperial units -->
+        <fieldset>
+          <legend>
+            <p>Units</p>
+          </legend>
+          <label for="metric">Metric:</label>
+          <input
+            type="radio"
+            id="metric"
+            name="units"
+            value="metric"
+            onclick="chMeasureUnits()"
+            checked
+          />
+          <label for="imperial">Imperial:</label>
+          <input
+            type="radio"
+            id="imperial"
+            name="units"
+            value="imperial"
+            onclick="chMeasureUnits()"
+          />
+        </fieldset>
+        <!-- Metric -->
+        <div id="metric-form" class="metric-form">
+          <label for="height-metric">
+            <p>Height (cm)</p>
+          </label>
+          <input id="height-metric" class="form-field__short" type="number" />
+          <label for="weight-metric">
+            <p>Weight (kg)</p>
+          </label>
+          <input id="weight-metric" class="form-field__full" type="number" />
+        </div>
+        <!-- Imperial -->
+        <div id="imperial-form" class="imperial-form">
           <fieldset>
             <legend>
-              <p>Units</p>
+              <p>Height</p>
             </legend>
-            <label for="metric">Metric:</label>
-            <input type="radio" id="metric" name="units" value="metric" onclick="unitsChange()" checked>
-            <label for="imperial">Imperial:</label>
-            <input type="radio" id="imperial" name="units" value="imperial" onclick="unitsChange()">
+            <label for="feet">Feet:</label>
+            <input id="feet" class="form-field__short" type="number" />
+            <label for="inches">Inches:</label>
+            <input id="inches" class="form-field__short" type="number" />
           </fieldset>
-          <!-- Metric -->
-          <div id="metric-form" class="metric-form">
-            <label for="height-metric">
-              <p>Height (cm)</p>
-            </label>
-            <input id="height-metric" class="form-field__short" type="number">
-            <label for="weight-metric">
-                <p>Weight (kg)</p>
-            </label>
-            <input id="weight-metric" class="form-field__full" type="number">
-          </div>
-          <!-- Imperial -->
-          <div id="imperial-form" class="imperial-form">
-      <fieldset>
-        <legend>
-          <p>Height</p>
-        <label
-          >Feet:
-          <input id="feet" class="form-field__short" type="number" name="feet"
-        /></label>
-        <label
-          >inches:
+          <label for="weight-imperial">
+            <p>Weight (lbs)</p>
+          </label>
           <input
-            id="inches"
-            class="form-field__short"
-            type="number"
-            name="inches"
-        /></label>
-        <p>Weight:</p>
-        <label
-          ><input
-            id="weight"
+            id="weight-imperial"
             class="form-field__full"
             type="number"
             name="weight"
-          />lbs</label
-        >
+          />
+        </div>
         <p>Diet:</p>
         <select id="diet" class="form-field__full" name="diet">
-          <option>Herbavor</option>
-          <option>Omnivor</option>
-          <option>Carnivor</option>
+          <option>herbavor</option>
+          <option>omnivor</option>
+          <option>carnivor</option>
         </select>
         <div id="btn">Compare Me!</div>
       </div>
     </form>
+    <!-- Holds an error message for form validation -->
+    <div id="error" class="error"></div>
     <!-- .grid to attach tiles to -->
     <main id="grid"></main>
+    <button id="repeat-btn" class="repeat-btn">Go Again</button>
     <footer>
       <!-- Include information source -->
       <p class="fine-print">
