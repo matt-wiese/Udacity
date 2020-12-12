@@ -1,4 +1,4 @@
-// Function that reads an external file
+// Function that reads an external text file
 // https://stackoverflow.com/questions/39989756/how-do-i-make-a-function-that-returns-the-value-of-a-local-text-file-in-javascri
 
 function readTextFile(file) {
@@ -30,6 +30,7 @@ function shuffleArray(arr) {
 }
 
 // Places object in middle of array
+// from Intro to JavaScript - L6:S13
 function valueMiddleArray(arr, human) {
   arr.splice(arr.length / 2, 0, human);
   return arr;
