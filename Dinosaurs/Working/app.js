@@ -20,7 +20,42 @@
 
 // global variables
 
-let dinos;
+function readDinosJSON() {
+  let rawFile = new XMLHttpRequest();
+  let allText = "";
+  rawFile.open(
+    "GET",
+    "https://matt-wiese.github.io/Dinosaurs/assets/json/dino.json",
+    false
+  );
+  rawFile.onreadystatechange = function () {
+    if (rawFile.readyState === 4) {
+      if (rawFile.status === 200 || rawFile.status == 0) {
+        allText = rawFile.responseText;
+      }
+    }
+  };
+  rawFile.send(null);
+  let objectJSON = JSON.parse(allText);
+  dinos = objectJSON.Dinos;
+  return dinos;
+}
+
+function DinoCon(dinoObj, units) {
+  this.species = dinoObj.species;
+  this.diet = dinoObj.diet;
+  this.where = dinoObj.where;
+  this.when = dinoObj.when;
+  this.fact = dinoObj.fact;
+  // programming metric and imperial options (default is imperial per dino.json)
+  if (units === "metric") {
+    this.weight = Math.round(dinoObj.weight / 2.21);
+    this.height = Math.round(dinoObj.height * 2.54);
+  } else {
+    this.weight = dinoObj.weight;
+    this.height = dinoObj.height;
+  }
+}
 
 // Create dino object with weight, hieght, and diet prototypes set up for
 // inheritance - Object Oriented JavaScript L3:E5
@@ -28,7 +63,7 @@ const protoDino = {
   // Create Dino Compare Method 1
   // NOTE: Weight in JSON file is in lbs, height in inches.
   compareWeight: function (hmnWgt) {
-    const weightRatio = (this.weight / hmnWgt).toFixed(1);
+    const wgtRatio = (this.weight / hmnWgt).toFixed(1);
     // Check for human less than, greater than, or same weight as dino
     if (wgtRatio > 1) {
       return `${this.species} weighed ${(this.weight / hmnWgt).toFixed(
@@ -44,16 +79,16 @@ const protoDino = {
   },
   // Create Dino Compare Method 2
   // NOTE: Weight in JSON file is in lbs, height in inches.
-  compareHeight: function (hmnWgt) {
-    const heightRatio = (this.height / hmnWgt).toFixed(1);
+  compareHeight: function (hmnHgt) {
+    const hgtRatio = (this.height / hmnHgt).toFixed(1);
     // Check for human less than, greater than, or same weight as dino
-    if (heightRatio > 1) {
-      return `${this.species} was ${(this.height / hmnWgt).toFixed(
+    if (hgtRatio > 1) {
+      return `${this.species} was ${(this.height / hmnHgt).toFixed(
         1
       )} times taller than you!`;
     }
-    if (heightRatio < 1) {
-      return `You are ${(hmnWgt / this.height).toFixed(1)} times taller than ${
+    if (hgtRatio < 1) {
+      return `You are ${(hmnHgt / this.height).toFixed(1)} times taller than ${
         this.species
       }!`;
     }
@@ -93,7 +128,7 @@ function createDinoArray(units) {
   // Insert the human placeholder here so that iteration works properly
   // in the grid element construction.  Human should be in the centre square.
   // MAY NEED TO REVERT 'createHumanElement()' back to "human placeholder"
-  dinoArray.splice(4, 0, createHumanElement());
+  dinoArray.splice(4, 0, "placeholder");
 
   return dinoArray;
 }
@@ -104,32 +139,32 @@ function createDinoArray(units) {
  * @param {Object} humanData Data grabbed from the user's input form
  * @returns {Element} An element to be added to the grid in the UI
  */
-function createDinoElement(dinoData, humanData) {
+function createDinoElement(dinoObj, humanData) {
   let fact;
   // Project requirement is that pigeon should always return the same fact,
   // so we rig the random number for pigeon
   // Dinosaurs each return one of 6 facts randomly chosen here
   const randomNumber =
-    dinoData.species === "Pigeon" ? 2 : Math.round(Math.random() * 5);
+    dinoObj.species === "Pigeon" ? 2 : Math.round(Math.random() * 5);
 
   switch (randomNumber) {
     case 0:
-      fact = `The ${dinoData.species} lived in ${dinoData.where}.`;
+      fact = `The ${dinoObj.species} lived in ${dinoObj.where}.`;
       break;
     case 1:
-      fact = `The ${dinoData.species} lived in the ${dinoData.when} period.`;
+      fact = `The ${dinoObj.species} lived in the ${dinoObj.when} period.`;
       break;
     case 2:
-      fact = dinoData.fact;
+      fact = dinoObj.fact;
       break;
     case 3:
-      fact = dinoData.compareWeight(humanData.weight);
+      fact = dinoObj.compareWeight(humanData.weight);
       break;
     case 4:
-      fact = dinoData.compareHeight(humanData.height);
+      fact = dinoObj.compareHeight(humanData.height);
       break;
     case 5:
-      fact = dinoData.compareDiet(humanData.diet);
+      fact = dinoObj.compareDiet(humanData.diet);
       break;
     default:
       fact = "Dinosaurs are cool!";
@@ -139,9 +174,9 @@ function createDinoElement(dinoData, humanData) {
   const newDiv = document.createElement("div");
   newDiv.className = "grid-item";
   newDiv.innerHTML = `<h3>${
-    dinoData.species
-  }</h3><img src="images/${dinoData.species.toLowerCase()}.png" alt="image of ${
-    dinoData.species
+    dinoObj.species
+  }</h3><img src="images/${dinoObj.species.toLowerCase()}.png" alt="image of ${
+    dinoObj.species
   }"><p>${fact}</p>`;
 
   return newDiv;
@@ -160,8 +195,8 @@ function getHumanData() {
     units = "metric";
   } else {
     height =
-      document.getElementById("imperial").value * 12 +
-      Number(document.getElementById("height-imperial").value);
+      document.getElementById("feet").value * 12 +
+      Number(document.getElementById("inches").value);
     weight = document.getElementById("weight-imperial").value;
     units = "imperial";
   }
@@ -195,12 +230,12 @@ function createHumanElement(humanData) {
 /**
  * @description Resets the UI elements if the user wants to try again
  */
-function repeat() {
-  document.getElementById("error").innerHTML = "";
-  document.getElementById("grid").innerHTML = "";
-  document.getElementById("repeat-btn").style.display = "none";
-  document.querySelector("form").style.display = "block";
-}
+// function repeat() {
+//   document.getElementById("error").innerHTML = "";
+//   document.getElementById("grid").innerHTML = "";
+//   document.getElementById("repeat-btn").style.display = "none";
+//   document.querySelector("form").style.display = "block";
+// }
 
 /**
  * @description Creates the grid for the UI result
@@ -259,7 +294,7 @@ function clicked(e) {
 /**
  * @description Called when the user changes units in the form, sets or hides the metric and imperial height and weight input elements
  */
-function unitsChange() {
+function chMeasureUnits() {
   if (document.getElementById("metric").checked) {
     document.getElementById("metric-form").style.display = "block";
     document.getElementById("imperial-form").style.display = "none";
