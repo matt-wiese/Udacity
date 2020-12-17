@@ -72,41 +72,41 @@ class Human extends Being {
   }
 }
 
-getRandomFact() {
+function getRandomFact() {
   // Returns an integer random number between min (included) and max (included):
   // reference: https://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
   let randomNumber = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
   //TODO: return random fact here
   let fact = "";
   if (this.getSpecies() === "Pigeon") {
-      return this.getFact();
+    return this.getFact();
   }
   switch (randomNumber) {
-      case 1:
-          fact = this.getWeightComparisonResult();
-          break;
-      case 2:
-          fact = this.getHeightComparisonResult();
-          break;
-      case 3:
-          fact = this.getDietComparisonResult();
-          break;
-      case 4:
-          fact = this.getOrigin();
-          break;
-      case 5:
-          fact = this.getPeriod();
-          break;
-      case 6:
-          fact = this.getFact();
-          break;
+    case 1:
+      fact = this.getWeightComparisonResult();
+      break;
+    case 2:
+      fact = this.getHeightComparisonResult();
+      break;
+    case 3:
+      fact = this.getDietComparisonResult();
+      break;
+    case 4:
+      fact = this.getOrigin();
+      break;
+    case 5:
+      fact = this.getPeriod();
+      break;
+    case 6:
+      fact = this.getFact();
+      break;
   }
   return fact;
 }
-
-getHTMLContent() {
-  return `<div class="grid-item"> <h3>${this.species}</h3> <img src="./images/${this.species.toLowerCase()}.png" alt="dino image"> <p>${this.getRandomFact()}</p> </div>`;
-}
+function getHTMLContent() {
+  return `<div class="grid-item"> <h3>${
+    this.species
+  }</h3> <img src="./images/${this.species.toLowerCase()}.png" alt="dino image"> <p>${this.getRandomFact()}</p> </div>`;
 }
 
 // let compHeight = (function (humHgt) {
